@@ -2,7 +2,7 @@
   "name": "CCS - Caminha Com Saúde",
   "short_name": "CCS",
   "description": "Calcula a tua meta diária de caminhada baseada no teu perfil único.",
-  "start_url": "/CCS-CaminharComSaude/index.html",
+  "start_url": "https://ismaelcostaformacao.github.io/CCS-CaminharComSaude/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f7fafc",
