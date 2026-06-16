@@ -4,115 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCS - Caminha Com Saúde</title>
-    <link rel="icon" href="./logo_ccs.png" type="image/png">
-
+    <link rel="icon" href="./icon-192.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#2c7a7b">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CCS">
-    <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="./icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registado'))
-                    .catch(err => console.log('Erro no Service Worker:', err));
-             });
-         }
-     </script>
-   
     <style>
-        :root {
-            --primary-color: #2c7a7b;
-            --secondary-color: #38b2ac;
-            --bg-color: #f7fafc;
-        }
-        body {
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
+        :root { --primary-color: #2c7a7b; --secondary-color: #38b2ac; --bg-color: #f7fafc; }
+        body { background-color: var(--bg-color); font-family: 'Segoe UI', system-ui, sans-serif; }
         .header-bg {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: 0 0 25px 25px;
-            padding: 2.5rem 0;
-            margin-bottom: 2rem;
+            color: white; border-radius: 0 0 25px 25px; padding: 2rem 0; margin-bottom: 2rem;
             box-shadow: 0 4px 15px rgba(44, 122, 123, 0.2);
         }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 1rem;
-        }
-        .logo-svg {
-            width: 60px;
-            height: 60px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-        .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        }
+        .logo-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 1rem; }
+        .logo-svg { width: 60px; height: 60px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 1.5rem; }
         .form-label { font-weight: 600; color: #4a5568; font-size: 0.95rem; }
-        .result-box {
-            background: linear-gradient(135deg, #f0fff4, #e6fffa);
-            border-left: 6px solid var(--primary-color);
+        .btn-ccs { background-color: var(--primary-color); border: none; color: white; transition: all 0.3s; }
+        .btn-ccs:hover { background-color: #235c5d; color: white; transform: translateY(-1px); }
+        .gps-active { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
         }
-        .km-display {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            line-height: 1;
-        }
-        .history-table { font-size: 0.9rem; }
-        .history-table th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 500;
-        }
-        .disclaimer {
-            font-size: 0.8rem;
-            color: #718096;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 1rem;
-            margin-top: 1.5rem;
-        }
-        .btn-ccs {
-            background-color: var(--primary-color);
-            border: none;
-            color: white;
-            transition: all 0.3s;
-        }
-        .btn-ccs:hover {
-            background-color: #235c5d;
-            color: white;
-            transform: translateY(-1px);
-        }
-        .loading-spinner {
-            display: none;
-            width: 1.2rem;
-            height: 1.2rem;
-            border-width: 0.2em;
-        }
+        .disclaimer { font-size: 0.8rem; color: #718096; border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1.5rem; }
+        .chart-container { position: relative; height: 300px; width: 100%; }
     </style>
 </head>
-
-
 <body>
 
     <div class="header-bg text-center">
@@ -120,10 +50,8 @@
             <div class="logo-container">
                 <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="50" cy="50" r="48" fill="white" opacity="0.95"/>
-                    <path d="M20 55 L 35 55 L 42 35 L 55 75 L 65 55 L 80 55" 
-                          stroke="#2c7a7b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M44 42 C 44 38, 40 35, 37 38 C 34 41, 44 50, 44 50 C 44 50, 54 41, 51 38 C 48 35, 44 38, 44 42" 
-                          fill="#e53e3e" opacity="0.9"/>
+                    <path d="M20 55 L 35 55 L 42 35 L 55 75 L 65 55 L 80 55" stroke="#2c7a7b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M44 42 C 44 38, 40 35, 37 38 C 34 41, 44 50, 44 50 C 44 50, 54 41, 51 38 C 48 35, 44 38, 44 42" fill="#e53e3e" opacity="0.9"/>
                     <text x="50" y="90" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#2c7a7b" text-anchor="middle" letter-spacing="1">CCS</text>
                 </svg>
                 <div class="text-start">
@@ -131,7 +59,7 @@
                     <p class="mb-0 opacity-75" style="font-size: 1.1rem; letter-spacing: 1px;">CAMINHA COM SAÚDE</p>
                 </div>
             </div>
-            <p class="lead mb-0 opacity-90">Calcula a tua meta, guarda o teu progresso e ajuda a treinar a nossa IA de saúde.</p>
+            <p class="lead mb-0 opacity-90">Calcula a tua meta, rastreia a tua caminhada e vê a tua evolução.</p>
         </div>
     </div>
 
@@ -139,44 +67,33 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 
-                <!-- Formulário -->
-                <div class="card p-4 mb-4">
-                    <h4 class="mb-4 text-secondary"><i class="bi bi-person-vcard me-2"></i>Teus Dados</h4>
+                <!-- SECÇÃO 1: Calculadora de Meta -->
+                <div class="card p-4">
+                    <h4 class="mb-4 text-secondary"><i class="bi bi-calculator me-2"></i>1. Calcula a tua Meta</h4>
                     <form id="calcForm">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="peso" class="form-label">Peso (kg)</label>
-                                <input type="number" class="form-control" id="peso" placeholder="Ex: 75" required min="30" max="300">
+                                <input type="number" class="form-control" id="peso" required min="30" max="300">
                             </div>
                             <div class="col-md-4">
                                 <label for="altura" class="form-label">Altura (cm)</label>
-                                <input type="number" class="form-control" id="altura" placeholder="Ex: 170" required min="100" max="250">
+                                <input type="number" class="form-control" id="altura" required min="100" max="250">
                             </div>
                             <div class="col-md-4">
                                 <label for="idade" class="form-label">Idade (anos)</label>
-                                <input type="number" class="form-control" id="idade" placeholder="Ex: 35" required min="10" max="120">
+                                <input type="number" class="form-control" id="idade" required min="10" max="120">
                             </div>
-
                             <div class="col-md-6">
                                 <label for="trabalho" class="form-label">Tipo de Trabalho</label>
                                 <select class="form-select" id="trabalho" required>
-                                    <option value="Sedentário">Sedentário (escritório, sentado)</option>
-                                    <option value="Leve">Leve (alguma movimentação)</option>
-                                    <option value="Moderado">Moderado (em pé, caminhadas leves)</option>
-                                    <option value="Ativo">Ativo (esforço físico constante)</option>
+                                    <option value="Sedentário">Sedentário</option>
+                                    <option value="Leve">Leve</option>
+                                    <option value="Moderado">Moderado</option>
+                                    <option value="Ativo">Ativo</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="exercicio" class="form-label">Exercício Físico Regular</label>
-                                <select class="form-select" id="exercicio" required>
-                                    <option value="Nenhum">Nenhum</option>
-                                    <option value="Ocasional">Ocasional (1-2x por semana)</option>
-                                    <option value="Regular">Regular (3-4x por semana)</option>
-                                    <option value="Intenso">Intenso (5+ vezes por semana)</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-4">
                                 <label for="fitness" class="form-label">Condicionamento Físico</label>
                                 <select class="form-select" id="fitness" required>
                                     <option value="Iniciante">Iniciante</option>
@@ -184,99 +101,134 @@
                                     <option value="Avançado">Avançado</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label for="dieta" class="form-label">Qualidade da Alimentação</label>
+                            <div class="col-md-6">
+                                <label for="dieta" class="form-label">Alimentação</label>
                                 <select class="form-select" id="dieta" required>
-                                    <option value="Precária">Precária (muitos processados)</option>
-                                    <option value="Média" selected>Média (equilíbrio ocasional)</option>
-                                    <option value="Boa">Boa (nutritiva e equilibrada)</option>
+                                    <option value="Precária">Precária</option>
+                                    <option value="Média" selected>Média</option>
+                                    <option value="Boa">Boa</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label for="saude" class="form-label">Histórico de Saúde</label>
                                 <select class="form-select" id="saude" required>
-                                    <option value="Saudável">Sem problemas relevantes</option>
-                                    <option value="Com restrições">Problemas articulares, cardíacos, etc.</option>
+                                    <option value="Saudável">Saudável</option>
+                                    <option value="Com restrições">Com restrições</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="d-grid gap-2 mt-4">
                             <button type="button" class="btn btn-lg btn-ccs" onclick="calcularCaminhada()">
                                 <i class="bi bi-calculator me-2"></i>Calcular Meta Diária
                             </button>
                         </div>
                     </form>
+
+                    <!-- Resultado da Meta -->
+                    <div id="resultadoSection" class="mt-4 p-3 rounded d-none" style="background-color: #e6fffa; border-left: 5px solid var(--primary-color);">
+                        <h5 class="text-center text-secondary">A tua meta recomendada é:</h5>
+                        <div class="text-center">
+                            <span id="resultadoKm" class="fw-bold" style="font-size: 3rem; color: var(--primary-color);">0,0</span>
+                            <span class="fs-4 text-muted">km / dia</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Resultados -->
-                <div id="resultadoSection" class="card p-4 d-none result-box">
-                    <div class="text-center mb-4">
-                        <h5 class="text-secondary mb-3">A tua meta diária recomendada é:</h5>
-                        <span id="resultadoKm" class="km-display">0,0</span>
-                        <span class="fs-3 text-muted fw-bold">km / dia</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h6 class="text-primary fw-bold"><i class="bi bi-list-check me-2"></i>Como chegamos a este valor:</h6>
-                            <ul id="listaExplicacao" class="list-group list-group-flush bg-transparent small"></ul>
+                <!-- SECÇÃO 2: Registo da Caminhada Real -->
+                <div class="card p-4">
+                    <h4 class="mb-4 text-secondary"><i class="bi bi-geo-alt me-2"></i>2. Regista a Caminhada de Hoje</h4>
+                    
+                    <!-- Controlos GPS -->
+                    <div class="alert alert-light border mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold"><i class="bi bi-satellite me-2"></i>Rastreio GPS</span>
+                            <span id="gpsStatus" class="badge bg-secondary">Inativo</span>
                         </div>
-                        <div class="col-md-6">
-                            <div id="avisoMedico" class="alert alert-warning d-none small" role="alert">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Atenção:</strong> <span id="textoAviso"></span>
-                            </div>
-                            <div class="alert alert-info small" role="alert">
-                                <i class="bi bi-info-circle-fill me-2"></i><strong>Dica CCS:</strong> <span id="dicaPersonalizada"></span>
-                            </div>
-                            
-                            <button id="btnGuardar" class="btn btn-outline-success w-100 mt-2" onclick="guardarDados()">
-                                <span class="loading-spinner spinner-border text-success me-2" role="status"></span>
-                                <i class="bi bi-save me-2"></i>Guardar no Histórico
+                        <div class="text-center mb-3">
+                            <span class="fs-1 fw-bold text-primary" id="distanciaGPSDisplay">0.00</span>
+                            <span class="text-muted">km percorridos</span>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <button id="btnIniciarGPS" class="btn btn-success flex-fill" onclick="iniciarRastreioGPS()">
+                                <i class="bi bi-play-fill me-1"></i> Iniciar Caminhada
                             </button>
-                            <small class="text-muted d-block text-center mt-2" style="font-size: 0.75rem;">
-                                Ao guardar, o registo fica no teu histórico local e é enviado anonimamente para melhorar o nosso algoritmo.
-                            </small>
+                            <button id="btnPararGPS" class="btn btn-danger flex-fill" onclick="pararRastreioGPS()" disabled>
+                                <i class="bi bi-stop-fill me-1"></i> Parar e Guardar
+                            </button>
+                        </div>
+                        <small class="text-muted d-block text-center mt-2" style="font-size: 0.75rem;">
+                            * Mantém o ecrã ligado e o telemóvel contigo. Funciona melhor no exterior.
+                        </small>
+                    </div>
+
+                    <!-- Inputs Pós-Caminhada -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="distanciaManual" class="form-label">Distância Real (km)</label>
+                            <input type="number" class="form-control" id="distanciaManual" step="0.1" placeholder="Ex: 3.5">
+                            <small class="text-muted">Podes corrigir o valor do GPS aqui.</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="condicaoPosCaminhada" class="form-label">Como te sentes agora?</label>
+                            <select class="form-select" id="condicaoPosCaminhada" required>
+                                <option value="" selected disabled>Seleciona...</option>
+                                <option value="Sente-se bem">😊 Sinto-me bem / Energético</option>
+                                <option value="Um pouco cansado">😐 Um pouco cansado / Normal</option>
+                                <option value="Exausto">😫 Exausto / Sem forças</option>
+                                <option value="Dor muscular/articular">🤕 Com dor muscular ou articular</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="disclaimer text-center">
-                        <i class="bi bi-shield-exclamation me-1"></i> 
-                        <strong>Aviso Legal:</strong> A CCS fornece apenas uma estimativa educacional. Não substitui aconselhamento médico profissional.
-                    </div>
-                </div>
-
-                <!-- Histórico Local do Utilizador -->
-                <div class="card p-4 mt-4" id="historicoSection">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0 text-secondary"><i class="bi bi-clock-history me-2"></i>O Teu Histórico Local</h5>
-                        <button class="btn btn-sm btn-outline-danger" onclick="limparHistorico()">
-                            <i class="bi bi-trash me-1"></i>Limpar
+                    <div class="d-grid gap-2 mt-4">
+                        <button id="btnGuardarFinal" class="btn btn-lg btn-ccs" onclick="guardarRegistoCompleto()">
+                            <span class="spinner-border spinner-border-sm d-none me-2" id="loadingSpinner" role="status"></span>
+                            <i class="bi bi-save me-2" id="saveIcon"></i>Guardar Registo (Local + Base de Dados IA)
                         </button>
                     </div>
+                </div>
+
+                <!-- SECÇÃO 3: Gráfico de Evolução -->
+                <div class="card p-4">
+                    <h4 class="mb-4 text-secondary"><i class="bi bi-graph-up me-2"></i>A Tua Evolução</h4>
+                    <div class="chart-container">
+                        <canvas id="graficoEvolucao"></canvas>
+                    </div>
+                    <div id="graficoVazio" class="text-center text-muted py-4 d-none">
+                        <i class="bi bi-info-circle fs-1"></i>
+                        <p class="mt-2">Ainda não há dados suficientes para mostrar o gráfico.<br>Guarda pelo menos 1 registo de caminhada!</p>
+                    </div>
+                </div>
+
+                <!-- SECÇÃO 4: Histórico -->
+                <div class="card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-secondary"><i class="bi bi-clock-history me-2"></i>Histórico</h5>
+                        <button class="btn btn-sm btn-outline-danger" onclick="limparHistorico()"><i class="bi bi-trash"></i></button>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table table-hover history-table align-middle">
-                            <thead>
+                        <table class="table table-hover align-middle" style="font-size: 0.9rem;">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Data</th>
-                                    <th>Peso</th>
-                                    <th>Idade</th>
-                                    <th>Condicionamento</th>
-                                    <th>Meta (km)</th>
+                                    <th>Meta</th>
+                                    <th>Real</th>
+                                    <th>Condição</th>
                                 </tr>
                             </thead>
                             <tbody id="tabelaHistorico">
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-3">Ainda não há registos guardados.</td>
-                                </tr>
+                                <tr><td colspan="4" class="text-center text-muted py-3">Sem registos.</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-grid mt-3">
-                        <button class="btn btn-ccs" onclick="exportarTudoCSV()">
-                            <i class="bi bi-download me-2"></i>Exportar Todo o Meu Histórico para CSV
-                        </button>
-                    </div>
+                    <button class="btn btn-outline-secondary w-100 mt-2" onclick="exportarTudoCSV()">
+                        <i class="bi bi-download me-2"></i>Exportar Histórico para CSV
+                    </button>
+                </div>
+
+                <div class="disclaimer text-center">
+                    <i class="bi bi-shield-exclamation me-1"></i> 
+                    <strong>Aviso:</strong> A CCS fornece estimativas educacionais. O rastreio GPS consome bateria. Consulta um médico antes de iniciar exercícios.
                 </div>
 
             </div>
@@ -287,212 +239,366 @@
 
     <script>
         // =====================================================================
-        // CONFIGURAÇÃO: Cola aqui o URL do teu Google Apps Script
+        // CONFIGURAÇÃO
         // =====================================================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWw4YcfwYAdnptS-frkAiW0PYVN1Zdo2uobLeK3TNqb2mIl5iRKcdZ4jeHYkfpgrkW/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWw4YcfwYAdnptS-frkAiW0PYVN1Zdo2uobLeK3TNqb2mIl5iRKcdZ4jeHYkfpgrkW/exec";
         
-        let ultimoResultado = null;
+        let metaCalculada = 0;
+        let dadosPerfil = {};
+        let graficoEvolucao = null;
 
-        // Carregar histórico local ao iniciar a página
-        document.addEventListener('DOMContentLoaded', atualizarTabelaHistorico);
+        // Variáveis do GPS
+        let watchId = null;
+        let distanciaGPS = 0;
+        let ultimaPosicao = null;
 
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarTabelaHistorico();
+            atualizarGrafico();
+        });
+
+        // --- 1. LÓGICA DA CALCULADORA ---
         function calcularCaminhada() {
             const peso = parseFloat(document.getElementById('peso').value);
             const altura = parseFloat(document.getElementById('altura').value);
             const idade = parseInt(document.getElementById('idade').value);
             const trabalho = document.getElementById('trabalho').value;
-            const exercicio = document.getElementById('exercicio').value;
-            const dieta = document.getElementById('dieta').value;
             const fitness = document.getElementById('fitness').value;
+            const dieta = document.getElementById('dieta').value;
             const saude = document.getElementById('saude').value;
 
-            if (!peso || !altura || !idade) {
-                alert("Por favor, preenche todos os campos de dados físicos.");
+            if (!peso || !altura || !idade) { alert("Preenche todos os dados físicos."); return; }
+
+            let km = (fitness === 'Iniciante') ? 3.0 : (fitness === 'Intermédio') ? 5.0 : 7.0;
+            if (trabalho === 'Sedentário') km += 2.0;
+            else if (trabalho === 'Leve') km += 1.0;
+            if (dieta === 'Precária') km += 0.5;
+            else if (dieta === 'Boa') km -= 0.5;
+            if (idade > 65) km = km * 0.85;
+            if (saude === 'Com restrições' && km > 5.0) km = 5.0;
+
+            metaCalculada = Math.round(km * 10) / 10;
+            const imc = (peso / Math.pow(altura / 100, 2)).toFixed(1);
+
+            dadosPerfil = { peso, altura, idade, trabalho, exercicio: "N/A", fitness, dieta, saude, imc };
+
+            document.getElementById('resultadoKm').innerText = metaCalculada.toFixed(1).replace('.', ',');
+            document.getElementById('resultadoSection').classList.remove('d-none');
+            document.getElementById('resultadoSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 2. LÓGICA DO GPS ---
+        function iniciarRastreioGPS() {
+            if (!navigator.geolocation) {
+                alert("O teu navegador não suporta geolocalização.");
                 return;
             }
 
-            let km = 0;
-            let explicacao = [];
-            let avisoMedico = "";
-            let dica = "";
-
-            if (fitness === 'Iniciante') { km = 3.0; explicacao.push("Base de 3,0 km para condicionamento iniciante."); } 
-            else if (fitness === 'Intermédio') { km = 5.0; explicacao.push("Base de 5,0 km para nível intermédio."); } 
-            else { km = 7.0; explicacao.push("Base de 7,0 km para nível avançado."); }
-
-            if (trabalho === 'Sedentário') { km += 2.0; explicacao.push("+2,0 km para compensar trabalho sedentário."); } 
-            else if (trabalho === 'Leve') { km += 1.0; explicacao.push("+1,0 km por trabalho leve."); } 
-            else if (trabalho === 'Moderado') { km += 0.5; }
-
-            if (exercicio === 'Nenhum') { km += 1.5; explicacao.push("+1,5 km por falta de exercício regular."); } 
-            else if (exercicio === 'Ocasional') { km += 0.5; } 
-            else if (exercicio === 'Intenso') { km -= 1.0; explicacao.push("-1,0 km (o exercício intenso já cobre parte da necessidade)."); }
-
-            if (dieta === 'Precária') { km += 0.5; explicacao.push("+0,5 km como compensação metabólica."); } 
-            else if (dieta === 'Boa') { km -= 0.5; explicacao.push("-0,5 km por manter uma alimentação saudável."); }
-
-            if (idade > 65) {
-                let reducao = (km * 0.15).toFixed(1);
-                km = km * 0.85;
-                explicacao.push(`Redução de 15% (${reducao.replace('.', ',')} km) por idade > 65 anos (segurança articular).`);
-            }
-
-            const alturaM = altura / 100;
-            const imc = peso / (alturaM * alturaM);
-
-            if (saude === 'Com restrições') {
-                if (km > 5.0) {
-                    km = 5.0;
-                    avisoMedico = "Devido ao histórico de saúde, a meta foi limitada a 5,0 km/dia para evitar sobrecarga. Consulta o teu médico.";
-                }
-                explicacao.push("⚠️ Ajuste de segurança aplicado devido ao histórico de saúde.");
-            }
-
-            if (imc >= 30) {
-                dica = "Com IMC indicando obesidade, prioriza caminhadas em ritmo leve e calçado com bom amortecimento. Considera atividades de baixo impacto nos dias alternados.";
-            } else if (idade > 60) {
-                dica = "Foca na consistência e não na velocidade. Caminhadas em grupo ou em parques são excelentes.";
-            } else {
-                dica = "Tenta dividir a meta em duas caminhadas (manhã e fim do dia) se for difícil fazer tudo de uma vez.";
-            }
-
-            km = Math.round(km * 10) / 10;
-            const agora = new Date();
-
-            // Objeto completo para guardar (Local + Remoto)
-            ultimoResultado = {
-                data: agora.toLocaleDateString('pt-PT'),
-                hora: agora.toLocaleTimeString('pt-PT'),
-                peso: peso,
-                altura: altura,
-                idade: idade,
-                trabalho: trabalho,
-                exercicio: exercicio,
-                fitness: fitness,
-                dieta: dieta,
-                saude: saude,
-                imc: imc.toFixed(1),
-                km: km.toFixed(1).replace('.', ',')
-            };
-
-            // Atualizar UI
-            document.getElementById('resultadoKm').innerText = ultimoResultado.km;
+            distanciaGPS = 0;
+            ultimaPosicao = null;
+            document.getElementById('distanciaGPSDisplay').innerText = "0.00";
             
-            const lista = document.getElementById('listaExplicacao');
-            lista.innerHTML = explicacao.map(item => `<li class="list-group-item bg-transparent border-0 ps-0"><i class="bi bi-check-circle-fill text-success me-2"></i>${item}</li>`).join('');
+            document.getElementById('gpsStatus').innerText = "A rastrear...";
+            document.getElementById('gpsStatus').className = "badge bg-success gps-active";
+            document.getElementById('btnIniciarGPS').disabled = true;
+            document.getElementById('btnPararGPS').disabled = false;
 
-            const divAviso = document.getElementById('avisoMedico');
-            if (avisoMedico) {
-                document.getElementById('textoAviso').innerText = avisoMedico;
-                divAviso.classList.remove('d-none');
-            } else {
-                divAviso.classList.add('d-none');
-            }
+            const options = { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 };
 
-            document.getElementById('dicaPersonalizada').innerText = dica;
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
 
-            const resultadoSection = document.getElementById('resultadoSection');
-            resultadoSection.classList.remove('d-none');
-            resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            // Resetar botão de guardar
-            const btn = document.getElementById('btnGuardar');
-            btn.disabled = false;
-            btn.className = "btn btn-outline-success w-100 mt-2";
-            btn.innerHTML = '<i class="bi bi-save me-2"></i>Guardar no Histórico e na Base de Dados IA';
+                    if (ultimaPosicao) {
+                        const dist = calcularDistanciaHaversine(ultimaPosicao.lat, ultimaPosicao.lon, lat, lon);
+                        if (dist > 0.005) {
+                            distanciaGPS += dist;
+                            document.getElementById('distanciaGPSDisplay').innerText = distanciaGPS.toFixed(2);
+                            document.getElementById('distanciaManual').value = distanciaGPS.toFixed(1);
+                        }
+                    }
+                    ultimaPosicao = { lat, lon };
+                },
+                (error) => {
+                    console.error("Erro GPS:", error);
+                    alert("Erro ao aceder ao GPS. Verifica as permissões.");
+                    pararRastreioGPS();
+                },
+                options
+            );
         }
 
-        // =====================================================================
-        // FUNÇÕES DE GRAVAÇÃO (LOCAL + REMOTO)
-        // =====================================================================
+        function pararRastreioGPS() {
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            document.getElementById('gpsStatus').innerText = "Concluído";
+            document.getElementById('gpsStatus').className = "badge bg-secondary";
+            document.getElementById('btnIniciarGPS').disabled = false;
+            document.getElementById('btnPararGPS').disabled = true;
+        }
 
-        function guardarDados() {
-            if (!ultimoResultado) return;
+        function calcularDistanciaHaversine(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
 
-            const btn = document.getElementById('btnGuardar');
-            
-            // 1. Guardar Localmente (LocalStorage)
+        // --- 3. GRAVAÇÃO DE DADOS ---
+        function guardarRegistoCompleto() {
+            const distManual = document.getElementById('distanciaManual').value;
+            const condicao = document.getElementById('condicaoPosCaminhada').value;
+
+            if (!condicao) {
+                alert("Por favor, seleciona como te sentes após a caminhada.");
+                return;
+            }
+
+            const agora = new Date();
+            const registo = {
+                ...dadosPerfil,
+                meta_km: metaCalculada > 0 ? metaCalculada.toFixed(1).replace('.', ',') : "N/A",
+                distancia_manual: distManual ? parseFloat(distManual).toFixed(1).replace('.', ',') : "0,0",
+                distancia_gps: distanciaGPS > 0 ? distanciaGPS.toFixed(2).replace('.', ',') : "0,00",
+                condicao_pos_caminhada: condicao,
+                data_registo: agora.toLocaleDateString('pt-PT'),
+                hora_registo: agora.toLocaleTimeString('pt-PT')
+            };
+
             let historico = JSON.parse(localStorage.getItem('ccs_historico') || '[]');
-            historico.push(ultimoResultado);
+            historico.push(registo);
             localStorage.setItem('ccs_historico', JSON.stringify(historico));
             atualizarTabelaHistorico();
+            atualizarGrafico(); // Atualizar gráfico após guardar
 
-            // 2. UI de carregamento
+            const btn = document.getElementById('btnGuardarFinal');
+            const spinner = document.getElementById('loadingSpinner');
+            const icon = document.getElementById('saveIcon');
+            
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm text-success me-2" role="status"></span>A enviar...';
+            spinner.classList.remove('d-none');
+            icon.classList.add('d-none');
 
-            // 3. Enviar JSON PURO (sem FormData!)
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
-                body: JSON.stringify(ultimoResultado)
-                // Sem headers - deixa o browser gerir
+                body: JSON.stringify(registo)
             })
             .then(() => {
-                btn.className = "btn btn-success w-100 mt-2";
-                btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Guardado com Sucesso (Local + IA)!';
+                btn.className = "btn btn-success btn-lg w-100";
+                btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Guardado com Sucesso!';
+                document.getElementById('distanciaManual').value = "";
+                document.getElementById('condicaoPosCaminhada').value = "";
+                document.getElementById('distanciaGPSDisplay').innerText = "0.00";
             })
-            .catch(error => {
-                console.error("Erro:", error);
-                btn.className = "btn btn-warning w-100 mt-2";
-                btn.innerHTML = '<i class="bi bi-exclamation-circle me-2"></i>Guardado apenas no Histórico Local.';
+            .catch(err => {
+                console.error(err);
+                btn.className = "btn btn-warning btn-lg w-100";
+                btn.innerHTML = '<i class="bi bi-exclamation-circle me-2"></i>Guardado apenas no Telemóvel.';
+            })
+            .finally(() => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
             });
         }
 
+        // --- 4. GRÁFICO DE EVOLUÇÃO ---
+        function atualizarGrafico() {
+            const historico = JSON.parse(localStorage.getItem('ccs_historico') || '[]');
+            
+            if (historico.length === 0) {
+                document.getElementById('graficoVazio').classList.remove('d-none');
+                if (graficoEvolucao) {
+                    graficoEvolucao.destroy();
+                    graficoEvolucao = null;
+                }
+                return;
+            }
+
+            document.getElementById('graficoVazio').classList.add('d-none');
+
+            // Extrair dados do histórico
+            const labels = historico.map(reg => reg.data_registo);
+            const metas = historico.map(reg => {
+                const meta = reg.meta_km ? parseFloat(reg.meta_km.replace(',', '.')) : 0;
+                return isNaN(meta) ? 0 : meta;
+            });
+            const distancias = historico.map(reg => {
+                const dist = reg.distancia_manual ? parseFloat(reg.distancia_manual.replace(',', '.')) : 0;
+                return isNaN(dist) ? 0 : dist;
+            });
+
+            const ctx = document.getElementById('graficoEvolucao').getContext('2d');
+
+            // Destruir gráfico anterior se existir
+            if (graficoEvolucao) {
+                graficoEvolucao.destroy();
+            }
+
+            graficoEvolucao = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Meta Prevista (km)',
+                            data: metas,
+                            borderColor: '#f39c12',
+                            backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                            borderWidth: 2,
+                            borderDash: [5, 5], // Linha tracejada
+                            pointBackgroundColor: '#f39c12',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            tension: 0.3,
+                            fill: false
+                        },
+                        {
+                            label: 'Distância Percorrida (km)',
+                            data: distancias,
+                            borderColor: '#2c7a7b',
+                            backgroundColor: 'rgba(44, 122, 123, 0.2)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#2c7a7b',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: {
+                                    size: 13,
+                                    weight: '600'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            borderColor: '#2c7a7b',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + ' km';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Data',
+                                font: { size: 13, weight: '600' }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Quilómetros (km)',
+                                font: { size: 13, weight: '600' }
+                            },
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' km';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 5. HISTÓRICO E CSV ---
         function atualizarTabelaHistorico() {
             const historico = JSON.parse(localStorage.getItem('ccs_historico') || '[]');
             const tbody = document.getElementById('tabelaHistorico');
             
             if (historico.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Ainda não há registos guardados.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">Sem registos.</td></tr>';
                 return;
             }
 
-            // Mostrar os últimos 5 registos (do mais recente para o mais antigo)
             const recentes = historico.slice(-5).reverse();
             tbody.innerHTML = recentes.map(reg => `
                 <tr>
-                    <td>${reg.data}<br><small class="text-muted">${reg.hora}</small></td>
-                    <td>${reg.peso} kg</td>
-                    <td>${reg.idade} anos</td>
-                    <td><span class="badge bg-secondary">${reg.fitness}</span></td>
-                    <td class="fw-bold text-primary fs-5">${reg.km}</td>
+                    <td>${reg.data_registo}<br><small class="text-muted">${reg.hora_registo}</small></td>
+                    <td><strong>${reg.meta_km}</strong></td>
+                    <td>${reg.distancia_manual}</td>
+                    <td><span class="badge bg-info text-dark">${reg.condicao_pos_caminhada}</span></td>
                 </tr>
             `).join('');
         }
 
         function limparHistorico() {
-            if (confirm("Tens a certeza que queres apagar todo o teu histórico local guardado neste navegador?")) {
+            if (confirm("Apagar todo o histórico local?")) {
                 localStorage.removeItem('ccs_historico');
                 atualizarTabelaHistorico();
+                atualizarGrafico();
             }
         }
 
         function exportarTudoCSV() {
             const historico = JSON.parse(localStorage.getItem('ccs_historico') || '[]');
-            if (historico.length === 0) {
-                alert("Não há dados no histórico para exportar.");
-                return;
-            }
+            if (historico.length === 0) { alert("Sem dados para exportar."); return; }
 
-            const cabecalho = ["Data", "Hora", "Peso_kg", "Altura_cm", "Idade", "Trabalho", "Exercicio", "Condicionamento", "Dieta", "Saude", "IMC", "Meta_KM"];
+            const cabecalho = ["Data", "Hora", "Peso", "Altura", "Idade", "Trabalho", "Fitness", "Dieta", "Saude", "IMC", "Meta_KM", "Distancia_Real_KM", "Distancia_GPS_KM", "Condicao_Final"];
             const linhas = historico.map(reg => [
-                reg.data, reg.hora, reg.peso, reg.altura, reg.idade, 
-                reg.trabalho, reg.exercicio, reg.fitness, reg.dieta, reg.saude, reg.imc, reg.km
+                reg.data_registo, reg.hora_registo, reg.peso, reg.altura, reg.idade,
+                reg.trabalho, reg.fitness, reg.dieta, reg.saude, reg.imc,
+                reg.meta_km, reg.distancia_manual, reg.distancia_gps, reg.condicao_pos_caminhada
             ]);
 
-            // \uFEFF é o BOM para o Excel reconhecer acentos em UTF-8
             const csvConteudo = "\uFEFF" + [cabecalho.join(";"), ...linhas.map(l => l.join(";"))].join("\n");
             const blob = new Blob([csvConteudo], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            
             const link = document.createElement("a");
-            const dataFicheiro = new Date().toISOString().slice(0,10);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `CCS_Meu_Historico_${dataFicheiro}.csv`);
-            document.body.appendChild(link);
+            link.href = URL.createObjectURL(blob);
+            link.download = `CCS_Historico_Completo_${new Date().toISOString().slice(0,10)}.csv`;
             link.click();
-            document.body.removeChild(link);
+        }
+
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
         }
     </script>
 </body>
